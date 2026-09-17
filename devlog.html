@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sol Devlog</title>
+<style>
+  :root{
+    --bg:#0a0e17; --panel:#111a2b; --line:#1f2a41;
+    --ink:#eef1f7; --ink-dim:#8a96ad; --ink-faint:#5c667c;
+    --sun:#f2a94e; --sun-bright:#ffd28a;
+  }
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; }
+  body{
+    background: var(--bg); color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.65; -webkit-font-smoothing: antialiased;
+  }
+  .wrap{ max-width: 740px; margin: 0 auto; padding-inline: 20px; }
+  h1,h2,.mono{ font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  a{ color: var(--sun-bright); text-decoration: none; }
+  a:hover{ text-decoration: underline; }
+
+  header{ padding-block: 48px 30px; border-bottom: 1px solid var(--line); }
+  .back{
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
+    color: var(--ink-faint); letter-spacing: 0.05em; display: inline-block; margin-bottom: 22px;
+  }
+  header h1{ font-size: clamp(32px, 6vw, 46px); margin: 0 0 12px; letter-spacing: -0.01em; }
+  header h1 .dot{ color: var(--sun); }
+  header p{ color: var(--ink-dim); font-size: 16px; max-width: 56ch; margin: 0; }
+
+  .entry{ padding-block: 40px; border-bottom: 1px solid var(--line); }
+  .entry:last-child{ border-bottom: none; }
+  .entry-date{
+    font-family: "IBM Plex Mono", monospace; text-transform: uppercase;
+    letter-spacing: 0.14em; font-size: 12px; color: var(--sun);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .entry-date::before{ content:""; width: 22px; height: 1px; background: var(--sun); display: inline-block; }
+  .entry h2{ font-size: 21px; margin: 0 0 14px; letter-spacing: -0.01em; text-wrap: balance; }
+  .entry p{ color: var(--ink-dim); font-size: 15.5px; max-width: 66ch; margin: 0 0 12px; }
+  .entry p:last-child{ margin-bottom: 0; }
+  .entry strong{ color: var(--ink); font-weight: 600; }
+
+  footer{
+    padding-block: 34px 60px; font-family: "IBM Plex Mono", monospace;
+    font-size: 12px; color: var(--ink-faint);
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="index.html">&larr; back to Sol</a>
+    <h1>Devlog<span class="dot">.</span></h1>
+    <p>Pulled from the project's actual working notes as it happened. Bugs, decisions, reversals, left in.</p>
+  </header>
+
+  <div class="entry">
+    <div class="entry-date">13 Sept 2026</div>
+    <h2>Powered flight: the ship flies to its own orbit</h2>
+    <p>For a long time getting a ship into orbit meant waiting. A real transfer burn, done the slow way, takes the better part of an hour &mdash; fine for a chemical rocket running on fumes, not for a ship that can hold two gravities of thrust. So the rule changed: at every instant there's a velocity the ship should have to get where it's going, and the nose points at the difference between that and what it's actually got. Gravity doesn't even need its own term &mdash; it just shows up as error every tick, and the throttle corrects for it, which ends up acting like a hover.</p>
+    <p>One version of that rule now handles capturing into orbit, raising, lowering, and circularizing. A ship with real thrust gets to lunar orbit from a 170&nbsp;km start in under four minutes, running the actual physics the whole time &mdash; eccentricity flat to four decimal places. The last bug took a live trace to find: the ship was overshooting and correcting forever, nose swinging 140&deg; a cycle, because the braking math never quite got to zero where it needed to. One line fixed it. Cut the engine at any point and you're still on a real orbit &mdash; we just stopped making people wait around for it.</p>
+  </div>
+
+  <div class="entry">
+    <div class="entry-date">13 Sept 2026</div>
+    <h2>Designing how a ship earns its name</h2>
+    <p>Ships will eventually get classified automatically &mdash; hauler, miner, warship, scout, carrier &mdash; based on what they actually are, not what the player calls them. Whichever system takes up the largest share of a ship's dry mass decides the category; the second largest becomes the adjective, so you end up with an armoured hauler or a long-range miner. Size sets the class, and the class names are different per type &mdash; a hauler's biggest hull is a Titan, a warship's is a Dreadnought. No military name shows up on a civilian ship, on purpose.</p>
+    <p>The number that actually matters is rated acceleration at full load, since that one doesn't change as cargo comes and goes. From it you get a lift ceiling &mdash; the strongest gravity the ship can leave while fully loaded. A capital ship that can only manage orbit is doing exactly what it's supposed to, not failing a grade.</p>
+    <p>The classifier only looks at a feature set, never the ship object directly, so the same code rates your own blueprint and whatever an enemy scanner manages to pick up. A smuggler running a disguised warship doesn't need a special system built for it &mdash; it's just a ship whose scanned features don't match its paperwork.</p>
+  </div>
+
+  <div class="entry">
+    <div class="entry-date">12 Sept 2026</div>
+    <h2>The ground finally holds you</h2>
+    <p>Two weeks earlier, the first landing report was blunt: you sink into the planet, catch on something invisible, and slide. Finding the actual bug took rebuilding how terrain works.</p>
+    <p>The fix started with the terrain itself: planets stopped being voxel data that only mattered up close and became one continuous surface, refined all the way down from orbit to a vertex every 5 meters, with collision built directly on the finest patches. Standing on the Moon, that surface now renders in a fraction of the time the old system needed, and a raycast lands on it to the millimeter &mdash; render, collision, and the mining math are all reading the same surface now.</p>
+    <p>That's what exposed the real bug: two numbers in two different files that were supposed to match and didn't. One system parked your feet just above the ground as a safety catch. Another only counted it as a landing if you were a bit further down than that. So you'd fall, get caught, get placed just out of reach of the second system, and fall again &mdash; over and over, sliding the whole way down. Took sixteen days and two files to find. The fix itself was one line.</p>
+  </div>
+
+  <div class="entry">
+    <div class="entry-date">9 Sept 2026</div>
+    <h2>Sensors: designed on a Tuesday, built by Wednesday</h2>
+    <p>The idea behind sensors: there's no real stealth in space, so instead of a stealth mode, it's a budget. Every ship is spending against four things at once &mdash; heat against the cold of deep space, light, how loud its radio chatter is, and how big a radar return its shape gives off. You don't hide. You just spend less.</p>
+    <p>Seeing any of that runs through one wavelength dial instead of separate modes. Slide it from visible light to radar or thermal infrared and each body reads differently &mdash; a hot planet's surface glows straight through its own clouds in the near-infrared, and a world that's a flat disc in one band shows real contours in another.</p>
+    <p>Getting the instrument look right took a rewrite. First pass looked like a security camera &mdash; scanlines, grain, static &mdash; and got rejected immediately: it needed to look like tech that actually works, not a broken TV. What shipped is a processed signal instead &mdash; colour ramps, contour lines at even signal levels, edges pulled from the data, one slow sweep every 17 seconds.</p>
+  </div>
+
+  <div class="entry">
+    <div class="entry-date">9 Sept 2026</div>
+    <h2>Mercury gets its real face</h2>
+    <p>Every other body in the game has either real elevation data or an obvious placeholder standing in for it. Mercury had neither &mdash; it was a uniformly wrinkled ball, because nobody had touched its terrain settings since the surface system was new.</p>
+    <p>The fix was a real elevation model from the MESSENGER mission, checked against named landmarks after converting it &mdash; a major basin reads out as the lowest point on the planet, which it actually is. That check matters because a mirrored map or a wrong roll produces something that looks completely fine until you compare it to something real.</p>
+    <p>Getting there meant rewriting the tool that reads these files, since elevation data doesn't come in one consistent format. Testing it against sixty real cases found three separate bugs, each the kind that wouldn't crash anything &mdash; just quietly produce a wrong but plausible-looking planet: a byte-order mistake, a wrong assumption about number formats, and a signed/unsigned mixup that turns every basin into a wall.</p>
+  </div>
+
+  <div class="entry">
+    <div class="entry-date">7 Sept 2026</div>
+    <h2>Light, at last</h2>
+    <p>For most of the project, planets have been lit correctly but never looked quite real &mdash; flat colour, no atmosphere, a sun that was just a bright dot. This pass gave the game its first properly dressed planet.</p>
+    <p>Earth got a full shader pass: day and night blending correctly across the terminator, city lights fading in at dusk, an ocean that actually glints, and a separate atmosphere layer that glows at the rim the way real air scattering does. It's built to extend &mdash; one shader for every planet's ground, one more for atmospheres, with per-body materials on top. The Sun changed too &mdash; not a wide hazy glow, but a tight bright core with a few sharp rays and a slow flicker, closer to how the real Sun looks in a photo than a game lens flare.</p>
+    <p>None of this changes gameplay. It's the difference between a solar system that's technically correct and one that actually looks like somewhere.</p>
+  </div>
+
+  <div class="entry">
+    <div class="entry-date">29 Aug 2026</div>
+    <h2>The bug that made the Sun powerless</h2>
+    <p>For a while, leaving Earth's gravitational sphere of influence meant leaving physics behind too. Past a certain distance, a ship just flew in a straight line &mdash; no gravity, no orbit panel, no maneuvers. Looked like a missing feature. Was actually one reversed comparison.</p>
+    <p>The function that decides which body's gravity currently owns a ship was picking the smallest sphere of influence that contains you. The Sun's sphere of influence is, correctly, infinite. Infinity is never smaller than infinity, so the Sun passed the "am I inside this body" check and then lost the actual comparison every time. Interplanetary space had no dominant body because the one body big enough to claim it got disqualified by its own size.</p>
+    <p>Found it the boring way &mdash; printing what the function actually returned at five different altitudes instead of reasoning about what it should return. Fixed, and now there's a standing rule against comparing a value to itself when infinity's involved, plus tests to catch it if it comes back.</p>
+  </div>
+
+  <div class="entry">
+    <div class="entry-date">29 Aug 2026</div>
+    <h2>Teaching the ship what &ldquo;there&rdquo; means</h2>
+    <p>Auto-orbit worked right up until it didn't know what you meant. Tell a ship to circularize with nothing selected and it would circularize around the Sun &mdash; technically correct, useless if what you meant was Earth.</p>
+    <p>Fixed with a target lock: an actual selected object, locked into the maneuver the moment you give the order, so changing your mind mid-burn doesn't silently redirect a burn that's already running. Four maneuvers came with it &mdash; point at target, match velocity, approach, hold station &mdash; plus two new cockpit screens built around whatever's locked.</p>
+    <p>The subtlest bug: relative velocity between two ships has to be measured in one shared frame, not by comparing two numbers that are each relative to a different planet. Get that wrong and your own ship can read as standing still while a real error sits hidden in the number &mdash; and it looks fine as long as everything's near one planet, which is exactly why it's easy to miss.</p>
+  </div>
+
+  <div class="entry">
+    <div class="entry-date">29 Aug 2026</div>
+    <h2>Say the word</h2>
+    <p>Say &ldquo;ship, burn retrograde&rdquo; out loud and it shows up as text on screen. That's the whole feature right now, on purpose &mdash; this pass is just the microphone and the transcript, not wired to actually command anything yet.</p>
+    <p>Getting there meant backing out of a decision already made. The original plan used a voice engine advertised as understanding a small fixed set of commands directly &mdash; turned out that wasn't true once it was actually checked in the engine instead of taken from a README. What's running now is a local speech model instead, bundled directly into the project and trimmed to less than half its original size, so nothing upstream going offline can break the build.</p>
+    <p>The one rule that mattered more than which engine to use: the microphone is off by default, no exceptions. A game that quietly listens by default is exactly the kind of thing that loses a community's trust. The mic light and level meter on screen are tied directly to whether the microphone is actually feeding audio in &mdash; not just whether the feature is switched on.</p>
+  </div>
+
+</div>
+<footer>
+  <div class="wrap">SOL &mdash; devlog, kept honest</div>
+</footer>
+</body>
+</html>
