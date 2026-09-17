@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sol</title>
+<style>
+  :root{
+    --bg:#0a0e17;
+    --panel:#111a2b;
+    --panel-2:#0d1524;
+    --line:#1f2a41;
+    --ink:#eef1f7;
+    --ink-dim:#8a96ad;
+    --ink-faint:#5c667c;
+    --sun:#f2a94e;
+    --sun-bright:#ffd28a;
+    --ok:#4fb88a;
+    --plan:#e8a33d;
+    --idle:#4c5670;
+  }
+  * { box-sizing: border-box; }
+  html, body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap{
+    max-width: 860px;
+    margin: 0 auto;
+    padding-inline: 20px;
+  }
+  h1,h2,h3,.mono{
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  h1,h2,h3{ text-wrap: balance; font-weight: 600; letter-spacing: -0.01em; }
+  a { color: var(--sun-bright); }
+
+  .eyebrow{
+    font-family: "IBM Plex Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 12px;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before{
+    content: "";
+    width: 22px; height: 1px;
+    background: var(--sun);
+    display: inline-block;
+  }
+
+  .hero{
+    position: relative;
+    padding-block: 64px 40px;
+    overflow: hidden;
+  }
+  .orbit-diagram{
+    position: absolute;
+    top: 50%; left: 50%;
+    width: min(720px, 150vw);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    opacity: 0.55;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .orbit-ring{ fill:none; stroke: var(--line); stroke-width: 1; }
+  .orbit-dot{ fill: var(--sun-bright); }
+  .sun-glow{ fill: var(--sun); }
+  @media (prefers-reduced-motion: no-preference){
+    .orbit-spin-1{ animation: spin 42s linear infinite; transform-origin: 300px 300px; }
+    .orbit-spin-2{ animation: spin 68s linear infinite; transform-origin: 300px 300px; }
+    .orbit-spin-3{ animation: spin 101s linear infinite; transform-origin: 300px 300px; }
+    .orbit-spin-4{ animation: spin 150s linear infinite; transform-origin: 300px 300px; }
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  .hero-inner{ position: relative; z-index: 1; }
+  .wordmark{
+    font-size: clamp(56px, 13vw, 108px);
+    line-height: 0.9;
+    margin: 0 0 14px;
+    letter-spacing: -0.02em;
+  }
+  .wordmark .dot{ color: var(--sun); }
+  .tagline{
+    font-size: clamp(17px, 2.6vw, 21px);
+    color: var(--ink-dim);
+    max-width: 46ch;
+    margin: 0 0 26px;
+  }
+  .hero-meta{
+    display: flex; flex-wrap: wrap; gap: 10px 18px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    letter-spacing: 0.03em;
+  }
+  .hero-meta span{ display:flex; align-items:center; gap:7px; }
+  .hero-meta .pip{ width:6px; height:6px; border-radius:50%; background: var(--sun); display:inline-block; }
+  .devlog-link{
+    display: inline-block;
+    margin-top: 24px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--sun-bright);
+    text-decoration: none;
+    border-bottom: 1px solid var(--sun);
+    padding-bottom: 2px;
+  }
+  .devlog-link:hover{ color: var(--sun); }
+
+  section{ padding-block: 46px; border-top: 1px solid var(--line); }
+  section > h2{ font-size: 22px; margin: 10px 0 18px; }
+  .lede{ font-size: 17px; color: var(--ink-dim); max-width: 68ch; }
+  .lede strong{ color: var(--ink); font-weight: 600; }
+
+  .pillars{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 22px;
+  }
+  .pillar{
+    background: var(--panel);
+    padding: 22px 22px 24px;
+  }
+  .pillar .num{
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--sun);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+  }
+  .pillar h3{ font-size: 16px; margin: 8px 0 8px; }
+  .pillar p{ font-size: 14.5px; color: var(--ink-dim); margin: 0; }
+  @media (max-width: 560px){ .pillars{ grid-template-columns: 1fr; } }
+
+  .stats{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 22px;
+  }
+  .stat{
+    background: var(--panel);
+    padding: 24px 18px;
+    text-align: left;
+  }
+  .stat .n{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: clamp(26px, 4.2vw, 36px);
+    color: var(--sun-bright);
+    font-variant-numeric: tabular-nums;
+    display: block;
+  }
+  .stat .l{ font-size: 12.5px; color: var(--ink-faint); margin-top: 8px; display:block; }
+  @media (max-width: 640px){ .stats{ grid-template-columns: 1fr; } }
+
+  .statement{ text-align: center; }
+  .statement p{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: clamp(26px, 5.6vw, 50px);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    color: var(--sun-bright);
+    margin: 0;
+  }
+  .statement span{
+    color: var(--ink-faint);
+    font-size: 0.36em;
+    display: block;
+    margin-top: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-family: "IBM Plex Mono", monospace;
+  }
+
+  .status-groups{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 22px;
+  }
+  @media (max-width: 700px){ .status-groups{ grid-template-columns: 1fr; } }
+  .status-head{
+    display: flex; align-items: center; gap: 8px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .status-head .dot{ width: 8px; height: 8px; border-radius: 50%; }
+  .status-head.ok .dot{ background: var(--ok); }
+  .status-head.ok{ color: var(--ok); }
+  .status-head.plan .dot{ background: var(--plan); }
+  .status-head.plan{ color: var(--plan); }
+  .status-head.idle .dot{ background: var(--idle); }
+  .status-head.idle{ color: var(--idle); }
+  .status-list{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .status-list li{ font-size: 14px; color: var(--ink-dim); padding-left: 0; }
+  .status-list li .note{ color: var(--ink-faint); font-size: 12.5px; }
+
+  .spec{ margin-top: 22px; border-top: 1px solid var(--line); }
+  .spec-row{
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 18px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .spec-row dt{
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .spec-row dd{ margin: 0; font-size: 14.5px; color: var(--ink-dim); }
+  @media (max-width: 560px){ .spec-row{ grid-template-columns: 1fr; gap: 6px; } }
+
+  .partner{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 32px;
+    margin-top: 22px;
+  }
+  .partner h3{ font-size: 19px; margin: 0 0 12px; }
+  .partner p{ color: var(--ink-dim); font-size: 15px; max-width: 60ch; }
+  .partner ul{ margin: 16px 0; padding-left: 20px; color: var(--ink-dim); font-size: 14.5px; }
+  .partner li{ margin-bottom: 6px; }
+  .contact-note{
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--line);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--sun-bright);
+  }
+
+  footer{
+    padding-block: 34px 60px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="hero">
+  <svg class="orbit-diagram" viewBox="0 0 600 600" aria-hidden="true">
+    <circle class="sun-glow" cx="300" cy="300" r="14"/>
+    <g class="orbit-spin-1">
+      <ellipse class="orbit-ring" cx="300" cy="300" rx="70" ry="70"/>
+      <circle class="orbit-dot" cx="370" cy="300" r="2.5"/>
+    </g>
+    <g class="orbit-spin-2">
+      <ellipse class="orbit-ring" cx="300" cy="300" rx="140" ry="132"/>
+      <circle class="orbit-dot" cx="440" cy="300" r="3"/>
+    </g>
+    <g class="orbit-spin-3">
+      <ellipse class="orbit-ring" cx="300" cy="300" rx="215" ry="198"/>
+      <circle class="orbit-dot" cx="515" cy="300" r="4"/>
+    </g>
+    <g class="orbit-spin-4">
+      <ellipse class="orbit-ring" cx="300" cy="300" rx="285" ry="252"/>
+      <circle class="orbit-dot" cx="585" cy="300" r="3"/>
+    </g>
+  </svg>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">Godot 4.5 &middot; solo-developed &middot; in progress</div>
+    <h1 class="wordmark">SOL<span class="dot">.</span></h1>
+    <p class="tagline">Build a ship block by block, walk around inside it, sit in the pilot's seat, and fly it across an actual solar system &mdash; true to scale, true to orbit.</p>
+    <div class="hero-meta">
+      <span><span class="pip"></span>Every planet, every major moon &mdash; true to scale, true to orbit</span>
+      <span><span class="pip"></span>13,000,000 asteroids, charted and waiting</span>
+    </div>
+    <a class="devlog-link" href="devlog.html">Read the devlog &rarr;</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section id="pitch">
+    <div class="eyebrow">The pitch</div>
+    <p class="lede">
+      <strong>Sol has the theme of scientific accuracy &mdash; it's not trying to be a real simulation.</strong>
+      You build a spaceship out of shaped blocks on a grid, run its cables and power by hand, and fly it
+      through the actual solar system: every planet and moon at true scale, on its real orbit. Ships take
+      structural damage and break apart along their own geometry. Land on any rocky world and walk it under
+      its own gravity. Long term, you found a corporation, mine and trade across the system, and eventually
+      terraform.
+    </p>
+    <p class="lede" style="margin-top:14px">
+      Realism is there because it makes the world make sense, not because accuracy is the goal by itself.
+      Where the real math would make you wait or do arithmetic by hand, the numbers get bent on purpose:
+      sci-fi reactors and thrust, a jump drive for distance, an autopilot that'll fly the orbital mechanics
+      for you if you'd rather not. The one thing that doesn't bend is time. No time warp, ever.
+    </p>
+  </section>
+
+  <section id="statement" class="statement">
+    <p>No time warp.<br>Not ever.<span>this world runs the same moment for everyone in it</span></p>
+  </section>
+
+  <section id="pillars">
+    <div class="eyebrow">Design pillars</div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="num">01</div>
+        <h3>Build it, then live in it</h3>
+        <p>The ship is a place, not a stat block. You walk its corridors, run its cables, and watch its screens.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">02</div>
+        <h3>The real solar system</h3>
+        <p>Actual bodies, actual distances, actual orbits. Real elevation data where it exists. Millions of asteroids that are always in the same place.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">03</div>
+        <h3>Nobody waits, nobody does arithmetic</h3>
+        <p>Sci-fi power and thrust, a smart autopilot, a jump drive for distance. No time warp &mdash; ever.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">04</div>
+        <h3>Consequences are physical</h3>
+        <p>Damage is structural, power is a budget, mass is real. A ship that cannot lift itself does not lift.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="world">
+    <div class="eyebrow">The solar system, modeled</div>
+    <div class="stats">
+      <div class="stat"><span class="n">32</span><span class="l">planets, moons and named bodies, from the Sun to Charon</span></div>
+      <div class="stat"><span class="n">384</span><span class="l">catalogued asteroids, placed where they were actually found</span></div>
+      <div class="stat"><span class="n">~13M</span><span class="l">procedural asteroids, seeded once so they stay put</span></div>
+    </div>
+  </section>
+
+  <section id="systems">
+    <div class="eyebrow">System status</div>
+    <p class="lede">Organized by system, not by phase. Nothing here is marked further along than it actually is.</p>
+    <div class="status-groups">
+      <div>
+        <div class="status-head ok"><span class="dot"></span>Built</div>
+        <ul class="status-list">
+          <li>Grid building, blueprints, lattice &amp; panels</li>
+          <li>Structural integrity &amp; damage</li>
+          <li>Power &mdash; reactors, solar, batteries, cables</li>
+          <li>Flight, thrusters, limiters</li>
+          <li>Ship AI, docking &amp; coupling</li>
+          <li>Weapons &amp; turrets</li>
+          <li>Cockpit screens &amp; panels</li>
+          <li>Voice control (spoken orders)</li>
+          <li>Solar system, gravity, jump drive, nav map</li>
+          <li>Asteroid populations &amp; named bodies</li>
+          <li>Planetary surfaces &amp; walking</li>
+          <li>Sensors &amp; light-time delay</li>
+          <li>Save / load, menus, rebindable input</li>
+        </ul>
+      </div>
+      <div>
+        <div class="status-head plan"><span class="dot"></span>Designed, not built</div>
+        <ul class="status-list">
+          <li>Mining &amp; refining</li>
+          <li>Cargo &amp; inventory</li>
+          <li>Economy, corporations, factions</li>
+          <li>Heat &amp; fuel</li>
+          <li>Life support &amp; sealed volumes</li>
+          <li>Mechanical blocks, tubes, automation</li>
+          <li>Ship classification &amp; rating</li>
+          <li>Small-grid blocks (probes, drones)</li>
+          <li>Rings &amp; debris fields</li>
+          <li>Terraforming</li>
+          <li>Multiplayer <span class="note">&mdash; single-player first, then hosted servers</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="status-head idle"><span class="dot"></span>Not started</div>
+        <ul class="status-list">
+          <li>Audio</li>
+          <li>VFX</li>
+          <li>Onboarding</li>
+          <li>Release</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="tech">
+    <div class="eyebrow">Technical</div>
+    <dl class="spec">
+      <div class="spec-row">
+        <dt>Engine</dt>
+        <dd>Godot 4.5, GDScript, static typing throughout.</dd>
+      </div>
+      <div class="spec-row">
+        <dt>Scale</dt>
+        <dd>Double-precision logical positions, a floating origin, and body-relative frames &mdash; the whole solar system fits, and the ground under your feet is still exact.</dd>
+      </div>
+      <div class="spec-row">
+        <dt>Terrain</dt>
+        <dd>Cube-sphere quadtree with geomorphing; real elevation data (LOLA, MESSENGER) where it exists, procedural detail on top.</dd>
+      </div>
+      <div class="spec-row">
+        <dt>Quality</dt>
+        <dd>A headless test harness runs on every change; every new check is mutation-tested before it's trusted.</dd>
+      </div>
+      <div class="spec-row">
+        <dt>Data</dt>
+        <dd>Real astronomical data throughout, credited by source &mdash; NASA, USGS, Solar System Scope (CC&nbsp;BY), Poly Haven (CC0).</dd>
+      </div>
+      <div class="spec-row">
+        <dt>Tunability</dt>
+        <dd>Every balance value is an exported dial. Balance is done later, by turning them &mdash; not by rewriting.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="partner">
+    <div class="eyebrow">Looking for a partner</div>
+    <div class="partner">
+      <h3>Solo-built so far. Looking for someone to build it with.</h3>
+      <p>
+        Everything above is one person's work, in the engine, since the start. Sol is aimed at Steam, and
+        the systems are far enough along now that what's actually missing is everything around the code:
+        release planning, marketing, community, the business side.
+      </p>
+      <p>Looking for a partner who:</p>
+      <ul>
+        <li>Can read and write GDScript, and work in the engine alongside me</li>
+        <li>Is genuinely strong where I'm weak &mdash; organizing the project, planning releases, marketing, community, the business side of actually shipping a game</li>
+        <li>Wants a real stake in this, not a contract for hours</li>
+      </ul>
+      <div class="contact-note">&gt; contact: add yours here before this goes live</div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <span class="mono">SOL &mdash; a solar system, built to scale</span>
+  <span class="mono">last updated from the project docs</span>
+</footer>
+</body>
+</html>
