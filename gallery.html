@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sol Gallery</title>
+<meta name="description" content="Screenshots from Sol, a ship-building space game in the real solar system.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e17; --panel:#111a2b; --line:#1f2a41;
+    --ink:#eef1f7; --ink-dim:#8a96ad; --ink-faint:#5c667c;
+    --sun:#f2a94e; --sun-bright:#ffd28a;
+  }
+  *{ box-sizing: border-box; }
+  html, body{ margin:0; padding:0; }
+  body{
+    background: var(--bg); color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap{ max-width: 1040px; margin: 0 auto; padding-inline: 20px; }
+  h1,h2,.mono{ font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  a{ color: var(--sun-bright); text-decoration: none; }
+  a:hover{ text-decoration: underline; }
+
+  header{ padding-block: 48px 30px; border-bottom: 1px solid var(--line); }
+  .nav{
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
+    color: var(--ink-faint); letter-spacing: 0.05em; margin-bottom: 22px;
+    display: flex; gap: 18px; flex-wrap: wrap;
+  }
+  header h1{ font-size: clamp(32px, 6vw, 46px); margin: 0 0 12px; letter-spacing: -0.01em; }
+  header h1 .dot{ color: var(--sun); }
+  header p{ color: var(--ink-dim); font-size: 16px; max-width: 60ch; margin: 0; }
+
+  .set{ padding-block: 36px; border-bottom: 1px solid var(--line); }
+  .set:last-of-type{ border-bottom: none; }
+  .set-head{
+    font-family: "IBM Plex Mono", monospace; text-transform: uppercase;
+    letter-spacing: 0.14em; font-size: 12px; color: var(--sun);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+  }
+  .set-head::before{ content:""; width: 22px; height: 1px; background: var(--sun); display: inline-block; }
+  .set > p{ color: var(--ink-dim); font-size: 15px; max-width: 66ch; margin: 0 0 20px; }
+
+  .grid{
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+  }
+  @media (max-width: 640px){ .grid{ grid-template-columns: 1fr; } }
+  figure{
+    margin: 0; background: var(--panel); border: 1px solid var(--line);
+    display: flex; flex-direction: column;
+  }
+  figure button{
+    all: unset; cursor: zoom-in; display: block; line-height: 0;
+  }
+  figure button:focus-visible{ outline: 2px solid var(--sun); outline-offset: 2px; }
+  figure img{ width: 100%; height: auto; display: block; aspect-ratio: 1908 / 962; object-fit: cover; }
+  figcaption{
+    padding: 10px 14px 12px; font-size: 13.5px; color: var(--ink-dim);
+  }
+  figcaption .mono{ color: var(--ink-faint); font-size: 12px; display: block; margin-top: 2px; }
+
+  dialog{
+    border: none; padding: 0; background: transparent; max-width: 96vw; max-height: 96vh;
+  }
+  dialog::backdrop{ background: rgba(4, 7, 14, 0.92); }
+  dialog img{ max-width: 96vw; max-height: 90vh; display: block; }
+  dialog p{
+    margin: 8px 0 0; text-align: center; font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px; color: var(--ink-dim);
+  }
+
+  footer{
+    padding-block: 34px 60px; font-family: "IBM Plex Mono", monospace;
+    font-size: 12px; color: var(--ink-faint);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="nav">
+      <a href="index.html">&larr; back to Sol</a>
+      <a href="devlog.html">Devlog</a>
+    </div>
+    <h1>Gallery<span class="dot">.</span></h1>
+    <p>Screenshots straight out of the engine, no touch-ups. Newest at the top. Click one to see it full size.</p>
+  </header>
+
+  <div class="set">
+    <div class="set-head">Mercury &middot; 14 Sept 2026</div>
+    <p>Landing on Mercury after its real elevation data went in. The terrain is built from the MESSENGER mission's elevation model. The ship is a test lattice, not a finished hull.</p>
+    <div class="grid">
+      <figure>
+        <button type="button" data-full="images/mercury-surface-ship.jpg" data-cap="Mercury, on the ground. Test ship lattice in the foreground.">
+          <img src="images/mercury-surface-ship.jpg" alt="A lattice-frame ship sitting on the grey surface of Mercury under a starry sky" loading="lazy">
+        </button>
+        <figcaption>On the ground next to the ship<span class="mono">mercury-surface-ship.jpg</span></figcaption>
+      </figure>
+      <figure>
+        <button type="button" data-full="images/mercury-surface.jpg" data-cap="Mercury surface, looking toward the horizon. Mars, Uranus and Ceres labelled in the sky.">
+          <img src="images/mercury-surface.jpg" alt="Mercury's surface stretching to the horizon with planet labels visible in the sky" loading="lazy">
+        </button>
+        <figcaption>Surface, looking toward the horizon<span class="mono">mercury-surface.jpg</span></figcaption>
+      </figure>
+      <figure>
+        <button type="button" data-full="images/mercury-low-orbit.jpg" data-cap="Mercury from low orbit.">
+          <img src="images/mercury-low-orbit.jpg" alt="The curved limb of Mercury seen from low orbit" loading="lazy">
+        </button>
+        <figcaption>Low orbit<span class="mono">mercury-low-orbit.jpg</span></figcaption>
+      </figure>
+      <figure>
+        <button type="button" data-full="images/mercury-from-space.jpg" data-cap="Mercury from a distance, real basins and craters from the MESSENGER data.">
+          <img src="images/mercury-from-space.jpg" alt="The full disc of Mercury against black space, craters and basins visible" loading="lazy">
+        </button>
+        <figcaption>The whole disc from a distance<span class="mono">mercury-from-space.jpg</span></figcaption>
+      </figure>
+    </div>
+  </div>
+
+</div>
+
+<dialog id="viewer">
+  <img id="viewer-img" src="" alt="">
+  <p id="viewer-cap"></p>
+</dialog>
+
+<footer>
+  <div class="wrap">SOL &mdash; gallery</div>
+</footer>
+
+<script>
+  (function(){
+    var dlg = document.getElementById('viewer');
+    var img = document.getElementById('viewer-img');
+    var cap = document.getElementById('viewer-cap');
+    if (!dlg || typeof dlg.showModal !== 'function') return;
+    document.querySelectorAll('figure button[data-full]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        img.src = btn.getAttribute('data-full');
+        img.alt = btn.querySelector('img').alt;
+        cap.textContent = btn.getAttribute('data-cap') || '';
+        dlg.showModal();
+      });
+    });
+    dlg.addEventListener('click', function(e){ if (e.target === dlg || e.target === img || e.target === cap) dlg.close(); });
+    dlg.addEventListener('close', function(){ img.src = ''; });
+  })();
+</script>
+</body>
+</html>
