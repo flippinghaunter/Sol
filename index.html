@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sol</title>
+<meta name="description" content="Sol is a ship-building space game set in the real solar system, made in Godot by one person.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0a0e17;
@@ -28,14 +31,8 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-  .wrap{
-    max-width: 860px;
-    margin: 0 auto;
-    padding-inline: 20px;
-  }
-  h1,h2,h3,.mono{
-    font-family: "IBM Plex Mono", ui-monospace, monospace;
-  }
+  .wrap{ max-width: 860px; margin: 0 auto; padding-inline: 20px; }
+  h1,h2,h3,.mono{ font-family: "IBM Plex Mono", ui-monospace, monospace; }
   h1,h2,h3{ text-wrap: balance; font-weight: 600; letter-spacing: -0.01em; }
   a { color: var(--sun-bright); }
 
@@ -45,31 +42,16 @@
     letter-spacing: 0.14em;
     font-size: 12px;
     color: var(--ink-faint);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: flex; align-items: center; gap: 10px;
   }
-  .eyebrow::before{
-    content: "";
-    width: 22px; height: 1px;
-    background: var(--sun);
-    display: inline-block;
-  }
+  .eyebrow::before{ content: ""; width: 22px; height: 1px; background: var(--sun); display: inline-block; }
 
-  .hero{
-    position: relative;
-    padding-block: 64px 40px;
-    overflow: hidden;
-  }
+  .hero{ position: relative; padding-block: 64px 40px; overflow: hidden; }
   .orbit-diagram{
-    position: absolute;
-    top: 50%; left: 50%;
-    width: min(720px, 150vw);
-    aspect-ratio: 1;
+    position: absolute; top: 50%; left: 50%;
+    width: min(720px, 150vw); aspect-ratio: 1;
     transform: translate(-50%, -50%);
-    opacity: 0.55;
-    z-index: 0;
-    pointer-events: none;
+    opacity: 0.55; z-index: 0; pointer-events: none;
   }
   .orbit-ring{ fill:none; stroke: var(--line); stroke-width: 1; }
   .orbit-dot{ fill: var(--sun-bright); }
@@ -83,218 +65,96 @@
   @keyframes spin{ to{ transform: rotate(360deg); } }
 
   .hero-inner{ position: relative; z-index: 1; }
-  .wordmark{
-    font-size: clamp(56px, 13vw, 108px);
-    line-height: 0.9;
-    margin: 0 0 14px;
-    letter-spacing: -0.02em;
-  }
+  .wordmark{ font-size: clamp(56px, 13vw, 108px); line-height: 0.9; margin: 0 0 14px; letter-spacing: -0.02em; }
   .wordmark .dot{ color: var(--sun); }
-  .tagline{
-    font-size: clamp(17px, 2.6vw, 21px);
-    color: var(--ink-dim);
-    max-width: 46ch;
-    margin: 0 0 26px;
-  }
+  .tagline{ font-size: clamp(17px, 2.6vw, 21px); color: var(--ink-dim); max-width: 48ch; margin: 0 0 26px; }
   .hero-meta{
     display: flex; flex-wrap: wrap; gap: 10px 18px;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 12.5px;
-    color: var(--ink-faint);
-    letter-spacing: 0.03em;
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
+    color: var(--ink-faint); letter-spacing: 0.03em;
   }
   .hero-meta span{ display:flex; align-items:center; gap:7px; }
   .hero-meta .pip{ width:6px; height:6px; border-radius:50%; background: var(--sun); display:inline-block; }
   .devlog-link{
-    display: inline-block;
-    margin-top: 24px;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 13px;
-    color: var(--sun-bright);
-    text-decoration: none;
-    border-bottom: 1px solid var(--sun);
-    padding-bottom: 2px;
+    display: inline-block; margin-top: 24px;
+    font-family: "IBM Plex Mono", monospace; font-size: 13px;
+    color: var(--sun-bright); text-decoration: none;
+    border-bottom: 1px solid var(--sun); padding-bottom: 2px;
   }
   .devlog-link:hover{ color: var(--sun); }
 
   section{ padding-block: 46px; border-top: 1px solid var(--line); }
   section > h2{ font-size: 22px; margin: 10px 0 18px; }
-  .lede{ font-size: 17px; color: var(--ink-dim); max-width: 68ch; }
-  .lede strong{ color: var(--ink); font-weight: 600; }
-
-  .pillars{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--line);
-    border: 1px solid var(--line);
-    margin-top: 22px;
-  }
-  .pillar{
-    background: var(--panel);
-    padding: 22px 22px 24px;
-  }
-  .pillar .num{
-    font-family: "IBM Plex Mono", monospace;
-    color: var(--sun);
-    font-size: 13px;
-    letter-spacing: 0.05em;
-  }
-  .pillar h3{ font-size: 16px; margin: 8px 0 8px; }
-  .pillar p{ font-size: 14.5px; color: var(--ink-dim); margin: 0; }
-  @media (max-width: 560px){ .pillars{ grid-template-columns: 1fr; } }
+  section h3{ font-size: 16px; margin: 26px 0 8px; color: var(--sun-bright); }
+  p{ font-size: 16px; color: var(--ink-dim); max-width: 68ch; margin: 0 0 14px; }
+  p strong{ color: var(--ink); font-weight: 600; }
 
   .stats{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--line);
-    border: 1px solid var(--line);
-    margin-top: 22px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line); margin: 22px 0;
   }
-  .stat{
-    background: var(--panel);
-    padding: 24px 18px;
-    text-align: left;
-  }
+  .stat{ background: var(--panel); padding: 22px 18px; }
   .stat .n{
-    font-family: "IBM Plex Mono", monospace;
-    font-size: clamp(26px, 4.2vw, 36px);
-    color: var(--sun-bright);
-    font-variant-numeric: tabular-nums;
-    display: block;
+    font-family: "IBM Plex Mono", monospace; font-size: clamp(26px, 4.2vw, 36px);
+    color: var(--sun-bright); font-variant-numeric: tabular-nums; display: block;
   }
   .stat .l{ font-size: 12.5px; color: var(--ink-faint); margin-top: 8px; display:block; }
   @media (max-width: 640px){ .stats{ grid-template-columns: 1fr; } }
 
-  .statement{ text-align: center; }
-  .statement p{
-    font-family: "IBM Plex Mono", monospace;
-    font-size: clamp(26px, 5.6vw, 50px);
-    font-weight: 600;
-    line-height: 1.18;
-    letter-spacing: -0.01em;
-    color: var(--sun-bright);
-    margin: 0;
-  }
-  .statement span{
-    color: var(--ink-faint);
-    font-size: 0.36em;
-    display: block;
-    margin-top: 16px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: 500;
-    font-family: "IBM Plex Mono", monospace;
-  }
-
-  .status-groups{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
-    margin-top: 22px;
-  }
+  .status-groups{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 22px; }
   @media (max-width: 700px){ .status-groups{ grid-template-columns: 1fr; } }
   .status-head{
     display: flex; align-items: center; gap: 8px;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 12.5px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--line);
+    font-family: "IBM Plex Mono", monospace; font-size: 12.5px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
   }
   .status-head .dot{ width: 8px; height: 8px; border-radius: 50%; }
-  .status-head.ok .dot{ background: var(--ok); }
-  .status-head.ok{ color: var(--ok); }
-  .status-head.plan .dot{ background: var(--plan); }
-  .status-head.plan{ color: var(--plan); }
-  .status-head.idle .dot{ background: var(--idle); }
-  .status-head.idle{ color: var(--idle); }
+  .status-head.ok .dot{ background: var(--ok); }   .status-head.ok{ color: var(--ok); }
+  .status-head.plan .dot{ background: var(--plan); } .status-head.plan{ color: var(--plan); }
+  .status-head.idle .dot{ background: var(--idle); } .status-head.idle{ color: var(--idle); }
   .status-list{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
-  .status-list li{ font-size: 14px; color: var(--ink-dim); padding-left: 0; }
+  .status-list li{ font-size: 14px; color: var(--ink-dim); }
   .status-list li .note{ color: var(--ink-faint); font-size: 12.5px; }
 
   .spec{ margin-top: 22px; border-top: 1px solid var(--line); }
-  .spec-row{
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: 18px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .spec-row dt{
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-  }
+  .spec-row{ display: grid; grid-template-columns: 160px 1fr; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .spec-row dt{ font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
   .spec-row dd{ margin: 0; font-size: 14.5px; color: var(--ink-dim); }
   @media (max-width: 560px){ .spec-row{ grid-template-columns: 1fr; gap: 6px; } }
 
-  .partner{
-    background: var(--panel);
-    border: 1px solid var(--line);
-    padding: 32px;
-    margin-top: 22px;
-  }
-  .partner h3{ font-size: 19px; margin: 0 0 12px; }
-  .partner p{ color: var(--ink-dim); font-size: 15px; max-width: 60ch; }
+  .partner{ background: var(--panel); border: 1px solid var(--line); padding: 32px; margin-top: 22px; }
+  .partner h3{ font-size: 19px; margin: 0 0 12px; color: var(--ink); }
+  .partner p{ font-size: 15px; max-width: 60ch; }
   .partner ul{ margin: 16px 0; padding-left: 20px; color: var(--ink-dim); font-size: 14.5px; }
   .partner li{ margin-bottom: 6px; }
   .contact-note{
-    margin-top: 22px;
-    padding-top: 18px;
-    border-top: 1px dashed var(--line);
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 13px;
-    color: var(--sun-bright);
+    margin-top: 22px; padding-top: 18px; border-top: 1px dashed var(--line);
+    font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--sun-bright);
   }
 
   footer{
-    padding-block: 34px 60px;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 12px;
-    color: var(--ink-faint);
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
+    padding-block: 34px 60px; font-family: "IBM Plex Mono", monospace; font-size: 12px;
+    color: var(--ink-faint); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
   }
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="hero">
   <svg class="orbit-diagram" viewBox="0 0 600 600" aria-hidden="true">
     <circle class="sun-glow" cx="300" cy="300" r="14"/>
-    <g class="orbit-spin-1">
-      <ellipse class="orbit-ring" cx="300" cy="300" rx="70" ry="70"/>
-      <circle class="orbit-dot" cx="370" cy="300" r="2.5"/>
-    </g>
-    <g class="orbit-spin-2">
-      <ellipse class="orbit-ring" cx="300" cy="300" rx="140" ry="132"/>
-      <circle class="orbit-dot" cx="440" cy="300" r="3"/>
-    </g>
-    <g class="orbit-spin-3">
-      <ellipse class="orbit-ring" cx="300" cy="300" rx="215" ry="198"/>
-      <circle class="orbit-dot" cx="515" cy="300" r="4"/>
-    </g>
-    <g class="orbit-spin-4">
-      <ellipse class="orbit-ring" cx="300" cy="300" rx="285" ry="252"/>
-      <circle class="orbit-dot" cx="585" cy="300" r="3"/>
-    </g>
+    <g class="orbit-spin-1"><ellipse class="orbit-ring" cx="300" cy="300" rx="70" ry="70"/><circle class="orbit-dot" cx="370" cy="300" r="2.5"/></g>
+    <g class="orbit-spin-2"><ellipse class="orbit-ring" cx="300" cy="300" rx="140" ry="132"/><circle class="orbit-dot" cx="440" cy="300" r="3"/></g>
+    <g class="orbit-spin-3"><ellipse class="orbit-ring" cx="300" cy="300" rx="215" ry="198"/><circle class="orbit-dot" cx="515" cy="300" r="4"/></g>
+    <g class="orbit-spin-4"><ellipse class="orbit-ring" cx="300" cy="300" rx="285" ry="252"/><circle class="orbit-dot" cx="585" cy="300" r="3"/></g>
   </svg>
   <div class="wrap hero-inner">
-    <div class="eyebrow">Godot 4.5 &middot; solo-developed &middot; in progress</div>
+    <div class="eyebrow">Godot 4.5 &middot; one developer &middot; in progress</div>
     <h1 class="wordmark">SOL<span class="dot">.</span></h1>
-    <p class="tagline">Build a ship block by block, walk around inside it, sit in the pilot's seat, and fly it across an actual solar system &mdash; true to scale, true to orbit.</p>
+    <p class="tagline">A space game where you build a ship out of blocks, walk around inside it, and fly it around the real solar system.</p>
     <div class="hero-meta">
-      <span><span class="pip"></span>Every planet, every major moon &mdash; true to scale, true to orbit</span>
-      <span><span class="pip"></span>13,000,000 asteroids, charted and waiting</span>
+      <span><span class="pip"></span>Real planets and moons, real distances, real orbits</span>
+      <span><span class="pip"></span>Time runs at normal speed. No time warp.</span>
     </div>
     <a class="devlog-link" href="devlog.html">Read the devlog &rarr;</a>
   </div>
@@ -302,157 +162,263 @@
 
 <div class="wrap">
 
-  <section id="pitch">
-    <div class="eyebrow">The pitch</div>
-    <p class="lede">
-      <strong>Sol has the theme of scientific accuracy &mdash; it's not trying to be a real simulation.</strong>
-      You build a spaceship out of shaped blocks on a grid, run its cables and power by hand, and fly it
-      through the actual solar system: every planet and moon at true scale, on its real orbit. Ships take
-      structural damage and break apart along their own geometry. Land on any rocky world and walk it under
-      its own gravity. Long term, you found a corporation, mine and trade across the system, and eventually
-      terraform.
+  <section id="what">
+    <div class="eyebrow">What it is</div>
+    <p>
+      Sol is a ship-building space game. You put a ship together block by block on a grid, run cables
+      between the reactor and the things that need power, and then you walk down the corridor, sit in the
+      pilot seat, and take it somewhere. The somewhere is the actual solar system. Every planet and every
+      major moon is there at its real size, on its real orbit, and you can land on any of the rocky ones
+      and get out and walk around.
     </p>
-    <p class="lede" style="margin-top:14px">
-      Realism is there because it makes the world make sense, not because accuracy is the goal by itself.
-      Where the real math would make you wait or do arithmetic by hand, the numbers get bent on purpose:
-      sci-fi reactors and thrust, a jump drive for distance, an autopilot that'll fly the orbital mechanics
-      for you if you'd rather not. The one thing that doesn't bend is time. No time warp, ever.
+    <p>
+      I'm making it because I wanted the middle ground between Space Engineers and Kerbal Space Program.
+      Space Engineers has the building and the systems but the world is small and made up. KSP has the real
+      orbital mechanics but you don't live in your ship. Sol is trying to have both, and to do it in a
+      solar system that's the real one.
+    </p>
+    <p>
+      The one rule that sits above everything else: <strong>it's a game with the theme of scientific
+      accuracy, not a simulation.</strong> The physics is real. Gravity is real, orbits are real, distances
+      are real. But the numbers that would make you sit and wait, or pull out a calculator, get bent.
+      Reactors and thrusters are sci-fi strong, so a ship flies to the orbit it wants in a few minutes
+      instead of coasting for an hour. There's a jump drive for the long trips. There's an autopilot that
+      does the orbital mechanics for you, and it's meant to be good enough that most people never fly by
+      hand. If you want to fly by hand, you can, and the sim underneath will hold up.
+    </p>
+    <p>
+      What doesn't bend is time. There's no time warp and there won't be one, because the plan is for this
+      to be a shared world eventually, and you can't fast-forward a world that other people are in.
     </p>
   </section>
 
-  <section id="statement" class="statement">
-    <p>No time warp.<br>Not ever.<span>this world runs the same moment for everyone in it</span></p>
-  </section>
+  <section id="playing">
+    <div class="eyebrow">How it plays</div>
 
-  <section id="pillars">
-    <div class="eyebrow">Design pillars</div>
-    <div class="pillars">
-      <div class="pillar">
-        <div class="num">01</div>
-        <h3>Build it, then live in it</h3>
-        <p>The ship is a place, not a stat block. You walk its corridors, run its cables, and watch its screens.</p>
-      </div>
-      <div class="pillar">
-        <div class="num">02</div>
-        <h3>The real solar system</h3>
-        <p>Actual bodies, actual distances, actual orbits. Real elevation data where it exists. Millions of asteroids that are always in the same place.</p>
-      </div>
-      <div class="pillar">
-        <div class="num">03</div>
-        <h3>Nobody waits, nobody does arithmetic</h3>
-        <p>Sci-fi power and thrust, a smart autopilot, a jump drive for distance. No time warp &mdash; ever.</p>
-      </div>
-      <div class="pillar">
-        <div class="num">04</div>
-        <h3>Consequences are physical</h3>
-        <p>Damage is structural, power is a budget, mass is real. A ship that cannot lift itself does not lift.</p>
-      </div>
-    </div>
+    <h3>Building</h3>
+    <p>
+      Blocks go on a grid and can sit in any of 24 orientations. There are shaped blocks, not just cubes,
+      so hulls can actually look like hulls. Bigger structures are made from lattice frames that you skin
+      with panels. Cables are placed by hand and form real networks. If a reactor isn't cabled to a
+      thruster, the thruster doesn't fire. Blueprints let you save a design and put it back down.
+    </p>
+    <p>
+      Mass is real and comes from the blocks you used. Where the mass sits matters. Damage is structural:
+      blocks take hits, and if a hit cuts a ship in two along its actual connections, you get two ships.
+      The cables on the wrong half stop working.
+    </p>
+
+    <h3>Flying</h3>
+    <p>
+      You sit in a seat and the ship's computer flies. You tell it what you want through three screens in
+      the cockpit: a pilot screen for doing things, a status screen for finding things out, and a
+      navigation and sensors screen for knowing what's around you. Orbit, radar, contacts, target, power,
+      thrusters each have a panel. Manual control is always there, but the normal way to play is to point
+      at something and say go.
+    </p>
+    <p>
+      The autopilot will get you into orbit, change orbit, match another ship, hold station, approach, and
+      land. When it can't do what you asked, it tells you why in plain words, like "cannot take off from
+      the surface, add thrust or drop cargo," instead of showing you two numbers and letting you work it
+      out. The idea is that you should never have to compare numbers to play this game.
+    </p>
+    <p>
+      Thrust-to-weight is the stat that matters. If your ship is slow, that's a ship problem, and you fix
+      it by bolting on more thrusters or a bigger reactor.
+    </p>
+
+    <h3>Getting around</h3>
+    <p>
+      For the long distances there's a jump drive. You keep your velocity through a jump, so arriving
+      somewhere is a burn to slow down, not a wait. The nav map shows the whole system. Right now jumping
+      is free; eventually it will cost fuel or charge or heat, that's not designed yet.
+    </p>
+
+    <h3>On the ground</h3>
+    <p>
+      Every rocky planet and moon has a surface you can land on and walk on under its own gravity. Where
+      NASA has real elevation data (the Moon, Mercury, Mars, and so on) that's what the terrain is built
+      from. Everywhere else it's generated from a seed so it's always the same. The Moon's terrain goes
+      down to a vertex every 5 meters when you're standing on it.
+    </p>
+
+    <h3>Seeing things</h3>
+    <p>
+      Sensors work as a wavelength dial rather than separate modes. Slide it from visible light to infrared
+      or radar and things look different. Venus's surface shows through its clouds in the near infrared.
+      Light takes time to travel, so what you see of something far away is where it was, not where it is.
+      Stealth isn't a mode either. Every ship gives off heat, reflects light, makes radio noise, and has a
+      radar shape, and hiding means spending less on all four at once.
+    </p>
+
+    <h3>Voice</h3>
+    <p>
+      You can talk to the ship. It runs a local speech model, so nothing goes to a server, and the
+      microphone is off unless you turn it on. Right now it transcribes what you say. Wiring the words to
+      actual commands is next.
+    </p>
   </section>
 
   <section id="world">
-    <div class="eyebrow">The solar system, modeled</div>
+    <div class="eyebrow">The world</div>
     <div class="stats">
-      <div class="stat"><span class="n">32</span><span class="l">planets, moons and named bodies, from the Sun to Charon</span></div>
-      <div class="stat"><span class="n">384</span><span class="l">catalogued asteroids, placed where they were actually found</span></div>
-      <div class="stat"><span class="n">~13M</span><span class="l">procedural asteroids, seeded once so they stay put</span></div>
+      <div class="stat"><span class="n">32</span><span class="l">real bodies with gravity and orbits: the Sun, 8 planets, 20 major moons, Ceres, Pluto, Charon</span></div>
+      <div class="stat"><span class="n">384</span><span class="l">real asteroids over 80 km, on their real orbits, from NASA's small-body database</span></div>
+      <div class="stat"><span class="n">~13M</span><span class="l">procedural asteroids in the main belt, Kuiper belt, Trojans, Hildas, Centaurs and near-Earth space</span></div>
     </div>
+    <p>
+      The procedural asteroids are a seeded density field, so a rock only exists in memory when you're near
+      it, but it's the same rock in the same place every time you come back. The big named ones, Ceres,
+      Vesta, Pallas and the rest, are hand-built, including what's in them to mine.
+    </p>
+    <p>
+      Planets have real albedo and, where the maps were available, real colour. Earth has day and night,
+      city lights, an atmosphere that glows at the edge. That kind of visual pass is only done for Earth
+      and the Sun so far; the rest are lit correctly but plain.
+    </p>
   </section>
 
-  <section id="systems">
-    <div class="eyebrow">System status</div>
-    <p class="lede">Organized by system, not by phase. Nothing here is marked further along than it actually is.</p>
+  <section id="now">
+    <div class="eyebrow">Where it is right now</div>
+    <p>
+      Honest list. Built means it works in the game today. Designed means I've written down how it's going
+      to work but there's no code. Nothing is marked further along than it is.
+    </p>
     <div class="status-groups">
       <div>
         <div class="status-head ok"><span class="dot"></span>Built</div>
         <ul class="status-list">
-          <li>Grid building, blueprints, lattice &amp; panels</li>
-          <li>Structural integrity &amp; damage</li>
-          <li>Power &mdash; reactors, solar, batteries, cables</li>
+          <li>Grid building, blueprints, lattice and panels</li>
+          <li>Structural damage and ships splitting</li>
+          <li>Power: reactors, solar, batteries, cables</li>
           <li>Flight, thrusters, limiters</li>
-          <li>Ship AI, docking &amp; coupling</li>
-          <li>Weapons &amp; turrets</li>
-          <li>Cockpit screens &amp; panels</li>
-          <li>Voice control (spoken orders)</li>
+          <li>Autopilot: orbit, landing, target lock, station hold</li>
+          <li>Docking and coupling</li>
+          <li>Weapons and turrets</li>
+          <li>Cockpit screens and panels</li>
+          <li>Voice input</li>
           <li>Solar system, gravity, jump drive, nav map</li>
-          <li>Asteroid populations &amp; named bodies</li>
-          <li>Planetary surfaces &amp; walking</li>
-          <li>Sensors &amp; light-time delay</li>
-          <li>Save / load, menus, rebindable input</li>
+          <li>Asteroid populations and named bodies</li>
+          <li>Planet surfaces and walking</li>
+          <li>Sensors and light-time delay</li>
+          <li>Save and load, menus, rebindable keys</li>
         </ul>
       </div>
       <div>
         <div class="status-head plan"><span class="dot"></span>Designed, not built</div>
         <ul class="status-list">
-          <li>Mining &amp; refining</li>
-          <li>Cargo &amp; inventory</li>
-          <li>Economy, corporations, factions</li>
-          <li>Heat &amp; fuel</li>
-          <li>Life support &amp; sealed volumes</li>
-          <li>Mechanical blocks, tubes, automation</li>
-          <li>Ship classification &amp; rating</li>
-          <li>Small-grid blocks (probes, drones)</li>
-          <li>Rings &amp; debris fields</li>
+          <li>Mining and refining</li>
+          <li>Cargo and inventory</li>
+          <li>Economy, corporations, NPCs, factions</li>
+          <li>Heat and fuel</li>
+          <li>Life support, airlocks, sealed rooms</li>
+          <li>Rotors, hinges, pistons, material tubes</li>
+          <li>Ship classes and ratings</li>
+          <li>Small blocks for probes and drones</li>
+          <li>Planetary rings and debris fields</li>
           <li>Terraforming</li>
-          <li>Multiplayer <span class="note">&mdash; single-player first, then hosted servers</span></li>
+          <li>Multiplayer <span class="note">(single player first)</span></li>
         </ul>
       </div>
       <div>
         <div class="status-head idle"><span class="dot"></span>Not started</div>
         <ul class="status-list">
-          <li>Audio</li>
-          <li>VFX</li>
-          <li>Onboarding</li>
+          <li>Sound</li>
+          <li>Effects</li>
+          <li>Tutorial / onboarding</li>
           <li>Release</li>
         </ul>
       </div>
     </div>
   </section>
 
+  <section id="future">
+    <div class="eyebrow">Where it's going</div>
+    <p>
+      The loop is build, fly, land or dock, do something out there (mine, trade, fight), and come back and
+      build something better. Early on that's you and one small ship working the near-Earth asteroids. Mid
+      game you've founded a corporation and you've got haulers and drones running routes while you're off
+      doing something else. Late game is terraforming, which is where all the resources in the system end
+      up going.
+    </p>
+
+    <h3>Mining and resources</h3>
+    <p>
+      Mining lasers cut volume out of an asteroid and it shows up as ore in a container. A refinery turns
+      ore into metal, an assembler turns metal into block stock, and blocks cost stock to place. Ice
+      feeds life support and fuel. Later, a mining outpost eats a body over time at whatever rate its
+      machinery allows. Cargo has mass, so a loaded hauler flies like a loaded hauler.
+    </p>
+
+    <h3>Corporations and the economy</h3>
+    <p>
+      Player corporations and NPC corporations are the same kind of thing. NPC ones have personalities and
+      run on a simulation tick with real travel distances, so a hauler from Mars takes as long as a hauler
+      from Mars would. You hire pilots, give them standing orders, and copy your best blueprint out of a
+      shipyard as many times as you can afford. Stations post contracts. Raids happen and you place
+      turrets. Corporations can go bankrupt, get bought, merge. There's a leaderboard.
+    </p>
+
+    <h3>Life support and the inside of the ship</h3>
+    <p>
+      Rooms will be sealed volumes. Doors will actually open and close, airlocks will cycle, and a hull
+      breach will vent the room. You'll have suit oxygen. Ships will have rotors, hinges and pistons so
+      you can build things that move, and material tubes so ore and ammunition can flow around the hull.
+    </p>
+
+    <h3>Terraforming</h3>
+    <p>
+      This is the end game. Every body has a percentage, and corporations contribute to it. The jump drive
+      will be able to move small bodies, so you can anchor an asteroid and park it in orbit or drop it on
+      a planet and get credit for the mass. There's a machine called the World Engine that holds an
+      atmosphere in place and heats or cools it, and it decays if you stop powering it. Ceres is the first
+      body I'm going to work through. Land on a terraformed body gets parcelled out to whoever contributed.
+    </p>
+
+    <h3>Multiplayer</h3>
+    <p>
+      Single player first. Then one player hosts and friends join. Then hosted servers with a shared,
+      persistent world where the corporations keep running when you're logged off. The architecture is
+      being kept open for that from the start, which is why there's no time warp and why the NPC economy
+      is built as a ledger rather than as ships flying around.
+    </p>
+
+    <h3>The rest</h3>
+    <p>
+      Weather on the gas giants and Venus and Mars. Flying down into an atmosphere and having the clouds
+      you saw from orbit become real formations around you. The Sun's prominences big enough to fly under.
+      Radar and thermal and radio as different ways of being seen, and stealth as the cost of not being
+      seen. Ships getting auto-classified as hauler, miner, warship, scout or carrier based on what they
+      actually are. Probes and drones on a smaller block scale. Sound. Effects. A tutorial. Steam.
+    </p>
+  </section>
+
   <section id="tech">
-    <div class="eyebrow">Technical</div>
+    <div class="eyebrow">Under the hood</div>
     <dl class="spec">
-      <div class="spec-row">
-        <dt>Engine</dt>
-        <dd>Godot 4.5, GDScript, static typing throughout.</dd>
-      </div>
-      <div class="spec-row">
-        <dt>Scale</dt>
-        <dd>Double-precision logical positions, a floating origin, and body-relative frames &mdash; the whole solar system fits, and the ground under your feet is still exact.</dd>
-      </div>
-      <div class="spec-row">
-        <dt>Terrain</dt>
-        <dd>Cube-sphere quadtree with geomorphing; real elevation data (LOLA, MESSENGER) where it exists, procedural detail on top.</dd>
-      </div>
-      <div class="spec-row">
-        <dt>Quality</dt>
-        <dd>A headless test harness runs on every change; every new check is mutation-tested before it's trusted.</dd>
-      </div>
-      <div class="spec-row">
-        <dt>Data</dt>
-        <dd>Real astronomical data throughout, credited by source &mdash; NASA, USGS, Solar System Scope (CC&nbsp;BY), Poly Haven (CC0).</dd>
-      </div>
-      <div class="spec-row">
-        <dt>Tunability</dt>
-        <dd>Every balance value is an exported dial. Balance is done later, by turning them &mdash; not by rewriting.</dd>
-      </div>
+      <div class="spec-row"><dt>Engine</dt><dd>Godot 4.5, GDScript, static typing everywhere.</dd></div>
+      <div class="spec-row"><dt>Scale</dt><dd>Double-precision positions, a floating origin, and body-relative frames, so the whole solar system fits without the ground jittering under your feet.</dd></div>
+      <div class="spec-row"><dt>Terrain</dt><dd>Cube-sphere quadtree with geomorphing. Real elevation data (LOLA, MESSENGER) where it exists, procedural detail on top.</dd></div>
+      <div class="spec-row"><dt>Testing</dt><dd>About 800 automated checks run headless on every change. Every new check gets mutation-tested before I trust it.</dd></div>
+      <div class="spec-row"><dt>Data</dt><dd>All real-world data is credited by source: NASA, USGS, Solar System Scope (CC BY), Poly Haven (CC0).</dd></div>
+      <div class="spec-row"><dt>Balance</dt><dd>Every number that might need tuning is an exported dial. Balancing happens later by turning dials, not by rewriting code.</dd></div>
     </dl>
   </section>
 
   <section id="partner">
     <div class="eyebrow">Looking for a partner</div>
     <div class="partner">
-      <h3>Solo-built so far. Looking for someone to build it with.</h3>
+      <h3>I've built this alone so far. I'd like to not ship it alone.</h3>
       <p>
-        Everything above is one person's work, in the engine, since the start. Sol is aimed at Steam, and
-        the systems are far enough along now that what's actually missing is everything around the code:
-        release planning, marketing, community, the business side.
+        Everything on this page is one person's work in the engine. The systems are far enough along that
+        the things missing now are mostly around the code, not in it: release planning, marketing,
+        community, the business side of actually putting a game on Steam.
       </p>
-      <p>Looking for a partner who:</p>
+      <p>I'm looking for someone who:</p>
       <ul>
-        <li>Can read and write GDScript, and work in the engine alongside me</li>
-        <li>Is genuinely strong where I'm weak &mdash; organizing the project, planning releases, marketing, community, the business side of actually shipping a game</li>
-        <li>Wants a real stake in this, not a contract for hours</li>
+        <li>Can read and write GDScript and work in the engine with me</li>
+        <li>Is strong where I'm weak: organising the project, planning a release, marketing, community, the business end</li>
+        <li>Wants a real stake in this on a profit-share basis, not an hourly contract</li>
       </ul>
       <div class="contact-note">&gt; contact: add yours here before this goes live</div>
     </div>
@@ -461,8 +427,8 @@
 </div>
 
 <footer>
-  <span class="mono">SOL &mdash; a solar system, built to scale</span>
-  <span class="mono">last updated from the project docs</span>
+  <span class="mono">SOL &mdash; a space game in the real solar system</span>
+  <span class="mono">updated from the project docs as things land</span>
 </footer>
 </body>
 </html>
